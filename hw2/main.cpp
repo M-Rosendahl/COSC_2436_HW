@@ -1,6 +1,7 @@
 #include "ArgumentManager.h"
 #include "Playlist.h"
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -93,33 +94,33 @@ void Playlist::CreateSmartPlaylist(int time_limit, ofstream &outFile) {
     int total_time = 0;                         // Utilizing counter
     
     // Adding favorite songs in their original order first
-    Song* current = head;
+    Song* current = this->head;
     while (current) {
-        if (current -> fav_status) {
-            if (total_time + current -> duration <= time_limit) {
+        if (current->fav_status) {
+            if (total_time + current->duration <= time_limit) {
                 smart_playlist.push_back(current);
-                total_time += current -> duration;
-            }
+                total_time += current->duration;
+            }        
         }
-        current = current -> next;
+        current = current->next;
     }
 
     // Then, adding non-favorite songs if there is time left
     current = head;                     // Reset to the head of the list
     while (current) {
-        if (!current -> fav_status) {
-            if (total_time + current -> duration <= time_limit) {
+        if (!current->fav_status) {
+            if (total_time + current->duration <= time_limit) {
                 smart_playlist.push_back(current);
                 total_time += current -> duration;
-            }
+            }        
         }
-        current = current -> next;
+        current = current->next;
     }
     
     // Printing the smart playlist
     outFile << "[";
     for (size_t i = 0; i < smart_playlist.size(); i++) {
-        outFile << smart_playlist[i] -> title;
+        outFile << smart_playlist[i]->title;
         if (i != smart_playlist.size() - 1)
         outFile << ", ";
     }
@@ -150,13 +151,16 @@ void readInputFile(Playlist &playlist, const string &filename, ofstream &outFile
 
         stringstream ss(args);
         if (command == "AddSong") {
-            string title;
+            string title, buf;
             int duration;
             bool fav_status;
             char comma;                                                     // To handle commas in input
 
             getline(ss, title, ',');                                        // Capture the title, including spaces, until the first comma
-            ss >> duration >> comma >> boolalpha >> fav_status;             // Parse the remaining fields for duration and favorite status
+            ss >> duration >> comma;             // Parse the remaining fields for duration and favorite status
+            // ss >> boolalpha >> fav_status;             // Parse the remaining fields for duration and favorite status
+            ss >> buf;
+            fav_status = ( buf.compare("true")==0 || buf.compare("True")==0);
 
             // Add the song with the parsed values
             playlist.AddSong(title, duration, fav_status);
@@ -194,11 +198,9 @@ void readInputFile(Playlist &playlist, const string &filename, ofstream &outFile
 int main(int argc, char *argv[]) {
     ArgumentManager am(argc, argv);
     
-   // string inputFile = am.get("input");
-   //  string outputFile = am.get("output");
+   string inputFile = am.get("input");
+   string outputFile = am.get("output");
 
-    string inputFile = "input1.txt";
-    string outputFile = "output1.txt";
 
     Playlist myPlaylist;
     ofstream outFile(outputFile);
