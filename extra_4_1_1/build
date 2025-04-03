@@ -1,0 +1,1 @@
+/usr/bin/g++ -fdiagnostics-color=always -g /Users/mikkel/Documents/GitHub/COSC_2436_HW/extra_4_1_1/main.cpp -o /Users/mikkel/Documents/GitHub/COSC_2436_HW/extra_4_1_1/main

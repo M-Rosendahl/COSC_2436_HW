@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/mikkel/Documents/GitHub/COSC_2436_HW/extra_4_1_1/main'
+relocations:     []
+...
